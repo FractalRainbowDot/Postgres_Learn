@@ -1,5 +1,4 @@
-asyncpg
+fastapi~=0.135.1
+pydantic-settings
+sqlalchemy
 pydantic
-SQLAlchemy
-fastapi
-uvicorn
