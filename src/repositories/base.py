@@ -26,13 +26,13 @@ class BaseRepo:
         result = await self.session.execute(query)
         return self.schema.model_validate(result.scalars().first())
 
-    async def delete_by_id(self, id: int):
-        stmt = delete(self.model).where(self.model.id == id)
+    async def delete_by_id(self, id: int) -> None:
+        stmt = delete(self.model).where(id == self.model.id)
         await self.session.execute(stmt)
         await self.session.commit()
 
     async def update(self, data: BaseModel, id: int) -> BaseModel:
-        stmt = update(self.model).where(self.model.id == id).values(**data.model_dump())
+        stmt = update(self.model).where(id == self.model.id).values(**data.model_dump())
         result = await self.session.execute(stmt)
         await self.session.commit()
         return self.schema.model_validate(result.scalars().first())
