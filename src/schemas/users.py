@@ -35,7 +35,7 @@ class UserBaseSchema(ValidationSchema):
 
 
 class UserAddSchema(UserBaseSchema):
-    password: str = Field(min_length=4, max_length=8)
+    password: str = Field(min_length=1, max_length=50)
 
 
 class UsersSchema(UserAddSchema):
@@ -57,7 +57,7 @@ class UserFilterSchema(ValidationSchema):
 
 
 class UpdateUserSchema(UserFilterSchema):
-    password: Optional[str] = Field(None, min_length=4, max_length=8)
+    password: Optional[str] = Field(None, min_length=1, max_length=50)
     is_active: Optional[bool] = Field(None)
 
 
