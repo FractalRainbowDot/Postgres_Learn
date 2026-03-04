@@ -14,7 +14,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - postgres_data_v2:/var/lib/postgresql/data
+      - postgres_data_v3:/var/lib/postgresql/data
 
 volumes:
-  postgres_data_v2:
+  postgres_data_v3:

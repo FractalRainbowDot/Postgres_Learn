@@ -1,4 +1,4 @@
-from typing import Any, Type, List
+from typing import Any, Type, List, Optional
 
 from pydantic import BaseModel
 from sqlalchemy import insert, select, delete, update
@@ -28,8 +28,16 @@ class BaseRepo:
         await self.session.execute(stmt)
         await self.session.commit()
 
-    async def update(self, data: BaseModel, user_id: int) -> BaseModel:
-        stmt = update(self.model).where(user_id == self.model.user_id).values(**data.model_dump())
+    async def update(self, data: BaseModel, user_id: int) -> Optional[BaseModel]:
+        stmt = (
+            update(self.model)
+            .where(user_id == self.model.user_id)
+            .values(**data.model_dump(exclude_unset=True))
+            .returning(self.model)
+        )
         result = await self.session.execute(stmt)
         await self.session.commit()
-        return self.schema.model_validate(result.scalars().first())
+        db_obj = result.scalars().first()
+        if db_obj:
+            return self.schema.model_validate(db_obj)
+        return None
