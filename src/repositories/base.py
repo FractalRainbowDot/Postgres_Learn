@@ -4,9 +4,6 @@ from pydantic import BaseModel
 from sqlalchemy import insert, select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models.users import UserModel
-from src.schemas.users import BaseUserSchema
-
 
 class BaseRepo:
     model: Any = None
@@ -26,13 +23,13 @@ class BaseRepo:
         result = await self.session.execute(query)
         return self.schema.model_validate(result.scalars().first())
 
-    async def delete_by_id(self, id: int) -> None:
-        stmt = delete(self.model).where(id == self.model.id)
+    async def delete_by_id(self, user_id: int) -> None:
+        stmt = delete(self.model).where(user_id == self.model.id)
         await self.session.execute(stmt)
         await self.session.commit()
 
-    async def update(self, data: BaseModel, id: int) -> BaseModel:
-        stmt = update(self.model).where(id == self.model.id).values(**data.model_dump())
+    async def update(self, data: BaseModel, user_id: int) -> BaseModel:
+        stmt = update(self.model).where(user_id == self.model.id).values(**data.model_dump())
         result = await self.session.execute(stmt)
         await self.session.commit()
         return self.schema.model_validate(result.scalars().first())
