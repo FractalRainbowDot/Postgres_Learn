@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any, Type, List
 
 from pydantic import BaseModel
 from sqlalchemy import insert, select, delete, update
@@ -18,19 +18,18 @@ class BaseRepo:
         await self.session.commit()
         return self.schema.model_validate(result.scalars().first())
 
-    async def get_by_filter(self, **kwargs_filters) -> BaseModel:
+    async def get_by_filter(self, **kwargs_filters) -> List[BaseModel]:
         query = select(self.model).filter_by(**kwargs_filters)
         result = await self.session.execute(query)
-        return self.schema.model_validate(result.scalars().first())
+        return [self.schema.model_validate(item) for item in result.scalars().all()]
 
     async def delete_by_id(self, user_id: int) -> None:
-        stmt = delete(self.model).where(user_id == self.model.id)
+        stmt = delete(self.model).where(user_id == self.model.user_id)
         await self.session.execute(stmt)
         await self.session.commit()
 
     async def update(self, data: BaseModel, user_id: int) -> BaseModel:
-        stmt = update(self.model).where(user_id == self.model.id).values(**data.model_dump())
+        stmt = update(self.model).where(user_id == self.model.user_id).values(**data.model_dump())
         result = await self.session.execute(stmt)
         await self.session.commit()
         return self.schema.model_validate(result.scalars().first())
-

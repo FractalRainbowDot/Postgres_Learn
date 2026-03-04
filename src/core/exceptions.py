@@ -18,3 +18,12 @@ class CounterNahryukError(ApplicationException):
     @property
     def message(self) -> str:
         return "There's no place for dirty pigs!"
+
+class DataNotFound(ApplicationException):
+    def __init__(self, filter_kwargs: dict = None):
+        self.filter_kwargs =  filter_kwargs
+    status_code: int = 404
+
+    @property
+    def message(self) -> str:
+        return f"Not found {self.filter_kwargs}"
