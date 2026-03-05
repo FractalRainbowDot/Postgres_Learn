@@ -1,6 +1,6 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from src.core.db_manager import DBManager
 
 
 class BService:
-    def __init__(self, session: AsyncSession):
-        self.session = session
+    def __init__(self, db: DBManager):
+        self.db = db

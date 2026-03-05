@@ -6,6 +6,7 @@ from src.schemas.users import Gender
 
 
 class UserModel(Base):
+    """Модель пользователей (users)"""
     __tablename__ = 'users'
 
     user_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

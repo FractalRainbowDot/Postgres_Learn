@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class BaseRepo:
+    """Базовый репозиторий"""
     model: Any = None
     schema: Type[BaseModel] = None
 

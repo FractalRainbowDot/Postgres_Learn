@@ -4,5 +4,6 @@ from src.schemas.users import FinalUserSchema
 
 
 class UserRepo(BaseRepo):
+    """Репозиторий пользователей (user)"""
     model = UserModel
     schema = FinalUserSchema

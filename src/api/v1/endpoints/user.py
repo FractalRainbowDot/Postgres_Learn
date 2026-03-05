@@ -1,36 +1,43 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.engine import sessionDep
-from src.schemas.users import UserAddSchema, FinalUserSchema, UserFilterSchema, UsersSchema, UpdateUserSchema
+from src.core.engine import DBDep
+from src.schemas.users import UserAddSchema, FinalUserSchema, UserFilterSchema, UpdateUserSchema
 from src.services.user import UserService
 
 router = APIRouter(prefix="/user", tags=["User_routers"])
 
 
 @router.post("/", response_model=FinalUserSchema)
-async def user_add(data: UserAddSchema,
-                   session: AsyncSession = sessionDep) -> FinalUserSchema:
-    return await UserService(session).create_user(data)
+async def user_add(
+        db: DBDep,
+        data: UserAddSchema
+) -> FinalUserSchema:
+    return await UserService(db).create_user(data)
 
 
 @router.get("/", response_model=List[FinalUserSchema])
-async def user_get_by_filters(data: UserFilterSchema = Depends(),
-                              session: AsyncSession = sessionDep) -> List[FinalUserSchema]:
-    return await UserService(session).get_user_by_filter(data)
+async def user_get_by_filters(
+        db: DBDep,
+        data: UserFilterSchema = Depends(),
+) -> List[FinalUserSchema]:
+    return await UserService(db).get_user_by_filter(data)
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int,
-                      session: AsyncSession = sessionDep):
-    await UserService(session).delete_user_by_id(user_id)
+async def delete_user(
+        db: DBDep,
+        user_id: int,
+):
+    await UserService(db).delete_user_by_id(user_id)
     return {'message': 'ok'}
 
 
 @router.patch("/{user_id}", response_model=FinalUserSchema)
-async def update_user(user_id: int,
-                      data: UpdateUserSchema,
-                      session: AsyncSession = sessionDep) -> FinalUserSchema:
-    return await UserService(session).update_user(data, user_id)
+async def update_user(
+        db: DBDep,
+        user_id: int,
+        data: UpdateUserSchema,
+) -> FinalUserSchema:
+    return await UserService(db).update_user(data, user_id)
