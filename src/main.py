@@ -8,6 +8,7 @@ app = FastAPI(
     title="test",
 )
 
+
 @app.exception_handler(ApplicationException)
 async def application_exception_handler(request: Request, exc: ApplicationException):
     return JSONResponse(
@@ -15,9 +16,5 @@ async def application_exception_handler(request: Request, exc: ApplicationExcept
         content={"message": exc.message},
     )
 
-@app.get("/test")
-async def test():
-    result = {"message": "Hello World"}
-    return result
 
 app.include_router(user_router)
