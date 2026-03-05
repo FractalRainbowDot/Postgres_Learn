@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 
-from src.core.engine import DBDep
+from src.core.engine import DBDep, PaginationDep
 from src.schemas.users import UserAddSchema, FinalUserSchema, UserFilterSchema, UpdateUserSchema
 from src.services.user import UserService
 
@@ -21,8 +21,9 @@ async def user_add(
 async def user_get_by_filters(
         db: DBDep,
         data: UserFilterSchema = Depends(),
+        limits = PaginationDep
 ) -> List[FinalUserSchema]:
-    return await UserService(db).get_user_by_filter(data)
+    return await UserService(db).get_user_by_filter(data, limits)
 
 
 @router.delete("/{user_id}")

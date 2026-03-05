@@ -1,6 +1,7 @@
 from typing import List
 
 from src.core.exceptions import DataNotFound
+from src.schemas.pagination import PaginationParams
 from src.schemas.users import FinalUserSchema, UserAddSchema, UserFilterSchema, UpdateUserSchema
 from src.services.base import BService
 
@@ -10,9 +11,9 @@ class UserService(BService):
     async def create_user(self, data: UserAddSchema) -> FinalUserSchema:
         return FinalUserSchema.model_validate(await self.db.user.create(data))
 
-    async def get_user_by_filter(self, data: UserFilterSchema) -> List[FinalUserSchema]:
+    async def get_user_by_filter(self, data: UserFilterSchema, limits: PaginationParams) -> List[FinalUserSchema]:
         kwargs_filters = data.model_dump(exclude_unset=True, exclude_none=True)
-        result = await self.db.user.get_by_filter(**kwargs_filters)
+        result = await self.db.user.get_by_filter(**kwargs_filters, limits)
         if not result:
             raise DataNotFound(kwargs_filters)
         return result

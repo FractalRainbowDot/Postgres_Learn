@@ -19,8 +19,8 @@ class BaseRepo:
         await self.session.commit()
         return self.schema.model_validate(result.scalars().first())
 
-    async def get_by_filter(self, **kwargs_filters) -> List[BaseModel]:
-        query = select(self.model).filter_by(**kwargs_filters)
+    async def get_by_filter(self, **kwargs_filters, limits: BaseModel) -> List[BaseModel]:
+        query = select(self.model).limit(limits.limit).offset(limits.offset).filter_by(**kwargs_filters)
         result = await self.session.execute(query)
         return [self.schema.model_validate(item) for item in result.scalars().all()]
 
