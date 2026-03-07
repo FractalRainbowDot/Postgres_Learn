@@ -13,7 +13,7 @@ class UserService(BService):
 
     async def get_user_by_filter(self, data: UserFilterSchema, limits: PaginationParams) -> List[FinalUserSchema]:
         kwargs_filters = data.model_dump(exclude_unset=True, exclude_none=True)
-        result = await self.db.user.get_by_filter(**kwargs_filters, limits)
+        result = await self.db.user.get_by_filter(limits, **kwargs_filters)
         if not result:
             raise DataNotFound(kwargs_filters)
         return result
