@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from sqlalchemy import insert, select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.schemas.pagination import PaginationParams
+
 
 class BaseRepo:
     """Базовый репозиторий"""
@@ -19,8 +21,10 @@ class BaseRepo:
         await self.session.commit()
         return self.schema.model_validate(result.scalars().first())
 
-    async def get_by_filter(self, limits: BaseModel, **kwargs_filters) -> List[BaseModel]:
-        query = select(self.model).limit(limits.limit).offset(limits.offset).filter_by(**kwargs_filters)
+    async def get_by_filter(self, pagination: Optional[PaginationParams] = None, **kwargs_filters) -> List[BaseModel]:
+        if pagination is None:
+            pagination = PaginationParams(limit=10, offset=0)
+        query = select(self.model).limit(pagination.limit).offset(pagination.offset).filter_by(**kwargs_filters)
         result = await self.session.execute(query)
         return [self.schema.model_validate(item) for item in result.scalars().all()]
 
@@ -30,10 +34,11 @@ class BaseRepo:
         await self.session.commit()
 
     async def update(self, data: BaseModel, id: int) -> Optional[BaseModel]:
+        update_data = data.model_dump(exclude_unset=True)
         stmt = (
             update(self.model)
             .where(id == self.model.id)
-            .values(**data.model_dump(exclude_unset=True))
+            .values(**update_data)
             .returning(self.model)
         )
         result = await self.session.execute(stmt)

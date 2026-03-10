@@ -36,7 +36,10 @@ class JobsAddSchema(ValidationSchema):
     description: str = Field(min_length=2, max_length=150)
     salary: float = Field(gt=0)
     office_address: str = Field(min_length=2, max_length=50)
-    requirements: List[Requirements] = Field(default_factory=list)
+    requirements: List[Requirements] = Field(
+        default_factory=list,
+        json_schema_extra={"example": [r.value for r in Requirements]}
+    )
     email: EmailStr = Field(min_length=5, max_length=50)
     cell_count: int = Field(None, ge=0)
 
@@ -45,7 +48,7 @@ class JobsSchema(JobsAddSchema):
     id: int
     is_active: bool = Field(default=True)
 
-class JobsOptionalSchema(BaseModel):
+class JobsOptionalSchemaNoId(BaseModel):
     title: Optional[str] = Field(None, min_length=2, max_length=50)
     description: Optional[str] = Field(None, min_length=2, max_length=150)
     salary: Optional[float] = Field(None, gt=0)
@@ -55,3 +58,6 @@ class JobsOptionalSchema(BaseModel):
     is_active: Optional[bool] = Field(None)
     id: Optional[int] = Field(None, gt=0)
     cell_count: Optional[int] = Field(None, ge=0)
+
+class JobsOptionalSchema(BaseModel):
+    id: Optional[int] = Field(None, gt=0)
