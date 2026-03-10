@@ -17,18 +17,18 @@ class JobService(BService):
             raise DataNotFound(kwargs_filters)
         return result
 
-    async def delete_by_id(self, job_id: int) -> None:
-        job = await self.db.jobs.get_by_filter(job_id=job_id)
+    async def delete_by_id(self, id: int) -> None:
+        job = await self.db.jobs.get_by_filter(id=id)
         if not job:
-            raise DataNotFound({'job_id': job_id})
+            raise DataNotFound({'id': id})
         await self.db.jobs.delete(job)
 
-    async def update_job(self, data: JobsOptionalSchema, job_id: int):
-        job = await self.db.jobs.get_by_filter(job_id=job_id)
+    async def update_job(self, data: JobsOptionalSchema, id: int):
+        job = await self.db.jobs.get_by_filter(id=id)
         if not job:
-            raise DataNotFound({'job_id': job_id})
+            raise DataNotFound({'id': id})
         return JobsSchema.model_validate(
-            await self.db.jobs.update(data, job_id)
+            await self.db.jobs.update(data, id)
         )
 
 

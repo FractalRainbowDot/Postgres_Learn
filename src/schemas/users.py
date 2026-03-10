@@ -40,7 +40,7 @@ class UserAddSchema(ValidationSchema):
 class FinalUserSchema(UserAddSchema):
     """Общая схема пользователей (users)"""
     is_active: bool
-    user_id: int
+    id: int
 
 
 class UserFilterSchema(ValidationSchema):

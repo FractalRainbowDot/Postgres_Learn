@@ -18,16 +18,16 @@ class UserService(BService):
             raise DataNotFound(kwargs_filters)
         return result
 
-    async def delete_user_by_id(self, user_id: int) -> None:
-        user = await self.db.user.get_by_filter(user_id=user_id)
+    async def delete_user_by_id(self, id: int) -> None:
+        user = await self.db.user.get_by_filter(id=id)
         if not user:
-            raise DataNotFound({'user_id': user_id})
-        await self.db.user.delete_by_id(user_id)
+            raise DataNotFound({'id': id})
+        await self.db.user.delete_by_id(id)
 
-    async def update_user(self, data: UpdateUserSchema, user_id: int) -> FinalUserSchema:
-        user = await self.db.user.get_by_filter(user_id=user_id)
+    async def update_user(self, data: UpdateUserSchema, id: int) -> FinalUserSchema:
+        user = await self.db.user.get_by_filter(id=id)
         if not user:
-            raise DataNotFound({'user_id': user_id})
+            raise DataNotFound({'id': id})
         return FinalUserSchema.model_validate(
-            await self.db.user.update(data, user_id)
+            await self.db.user.update(data, id)
         )

@@ -9,7 +9,7 @@ class UserModel(Base):
     """Модель пользователей (users)"""
     __tablename__ = 'users'
 
-    user_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(20), nullable=False, )
     surname: Mapped[str] = mapped_column(String(50), nullable=False, )
     age: Mapped[int] = mapped_column(Integer, nullable=False, )

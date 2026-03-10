@@ -24,15 +24,15 @@ class BaseRepo:
         result = await self.session.execute(query)
         return [self.schema.model_validate(item) for item in result.scalars().all()]
 
-    async def delete_by_id(self, user_id: int) -> None:
-        stmt = delete(self.model).where(user_id == self.model.user_id)
+    async def delete_by_id(self, id: int) -> None:
+        stmt = delete(self.model).where(id == self.model.id)
         await self.session.execute(stmt)
         await self.session.commit()
 
-    async def update(self, data: BaseModel, user_id: int) -> Optional[BaseModel]:
+    async def update(self, data: BaseModel, id: int) -> Optional[BaseModel]:
         stmt = (
             update(self.model)
-            .where(user_id == self.model.user_id)
+            .where(id == self.model.id)
             .values(**data.model_dump(exclude_unset=True))
             .returning(self.model)
         )
